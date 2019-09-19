@@ -1,0 +1,64 @@
+
+<link rel="stylesheet" href="http://172.16.126.30:8000/static/layuis/css/layui.css" media="all">
+
+
+<div style="margin-left: 100px;margin-top: 50px">
+    <div class="layui-upload">
+        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择xml</button>
+        <button type="button" class="layui-btn" id="test9">效验xml</button>
+    </div>
+
+    <img style="margin-left: 82px;margin-top: 25px;display: none" src="http://172.16.126.30:8000/static/images/loadding.gif" alt="loadding">
+    <div>
+        <br>
+        <br>
+        <br>
+    </div>
+    <p style="display: block;color: red" id="xml_err"></p>
+    <p style="display: none;color: red" id="xml_errs">注：如果当前错误行是标签,则行数需减一!!</p>
+
+</div>
+
+
+<script src="http://172.16.126.30:8000/static/layuis/layui.js" charset="utf-8"></script>
+<script>
+     layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#test8'
+            , accept: 'file'
+            , url: '/t/test1/'
+            , auto: false
+            , exts: 'xml' // 控制上传文件的后缀
+            , data: {
+                hostname: function () {
+                    $("img").css("display", "block");
+                }
+            }
+            , headers: {'X-CSRFTOKEN': '{{ request.COOKIES.csrftoken }}'}
+            //,multiple: true
+            , bindAction: '#test9'
+            , done: function (res) {
+                if (res.code === 0) {
+                    alert(res.msg);
+                    $("img").css("display", "none");
+                    var p = document.getElementById("xml_err");
+                    p.innerHTML = '';
+                    $("#xml_errs").css("display", "none");
+                } else {
+                    $("img").css("display", "none");
+                    $("#xml_errs").css("display", "block");
+                    var p = document.getElementById("xml_err");
+                    p.innerHTML = res.msg;
+                }
+            }
+        });
+
+    });
+
+</script>
+
+
+
